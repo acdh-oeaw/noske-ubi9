@@ -1,0 +1,24 @@
+diff -u exportlib.py.orig exportlib.py
+--- exportlib.py.orig   2023-03-22 15:28:23.000000000 +0100
++++ exportlib.py        2023-06-23 19:49:24.269120800 +0200
+@@ -499,7 +499,7 @@
+ def xlsx(methodname, data, outf, nl, params):
+     import openpyxl
+     import re
+-    from openpyxl.writer.excel import save_virtual_workbook
++    import io
+     illegal_character_re = re.compile(r'[\000-\010]|[\013-\014]|[\016-\037]')
+     control_characters = re.compile('^[+\-@=].*')
+
+@@ -802,8 +802,9 @@
+     for col, value in dims.items():
+         ws1.column_dimensions[col].width = value
+
+-
+-    outf.buffer.write(save_virtual_workbook(wb))
++    with io.BytesIO() as buffer:
++        wb.save(buffer)
++        outf.buffer.write(buffer.getvalue())
+
+
+ def xml(methodname, data, outf, nl, params):

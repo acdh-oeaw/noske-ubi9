@@ -1,0 +1,10 @@
+{
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/acdh-oeaw/docker-tools-environments"
+  },
+  "license": "GPL-3.0",
+  "dependencies": {
+    "swagger-ui-dist": "^5.9.1"
+  }
+}

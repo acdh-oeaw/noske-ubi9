@@ -1,0 +1,10 @@
+--- /root/rpmbuild/SPECS/bonito-open.spec.orig  2024-02-20 15:44:58.292672490 +0000
++++ /root/rpmbuild/SPECS/bonito-open.spec       2024-02-20 15:45:24.912671507 +0000
+@@ -31,6 +31,7 @@
+
+ %prep
+ %setup -n bonito-open-%{version}
++sed -i "1c#\!/usr/bin/python3" run.cgi.in
+
+ %build
+ %configure
