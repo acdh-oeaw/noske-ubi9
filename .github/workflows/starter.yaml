@@ -78,3 +78,34 @@ jobs:
       PUBLIC_URL: ${{ needs.generate_workflow_vars.outputs.PUBLIC_URL }}
       fetch-depth: ${{ fromJson(needs.setup_workflow_env.outputs.fetch-depth) }}
       submodules: ${{ needs.setup_workflow_env.outputs.submodules }}
+  rpm-release:
+      needs: [setup_workflow_env, generate_workflow_vars, _1]
+      name: Create RPM Release
+      permissions:
+        contents: write
+      if: github.ref_type == 'tag'
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@master
+        
+        - name: Create tags based on git data
+          id: meta
+          uses: docker/metadata-action@v5
+          with:
+            images: |
+              ${{ needs.setup_workflow_env.outputs.registry_root }}${{ needs.setup_workflow_env.outputs.image_name }}
+            tags: |
+              type=raw,value={{sha}}
+        
+        - name: Get RPMS
+          run: |
+            docker run --rm --name noske $DOCKER_METADATA_OUTPUT_TAGS
+            docker exec -it -u 0:0 noske /bin/bash -c 'cp /root/*.rpm /home/user; cp /root/noarch/*.rpm /home/user; cp /root/x86_64/*.rpm /home/user; chown -R www-data:www-data /home/user'
+            docker cp noske:/home/user .
+            docker stop noske 
+        
+        - uses: ncipollo/release-action@v1
+          with:
+            artifacts: "user/*.rpm"
