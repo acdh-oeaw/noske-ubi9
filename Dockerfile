@@ -5,7 +5,7 @@ RUN --mount=type=cache,target=/sources \
     dnf install 'dnf-command(config-manager)' --assumeyes && \
     dnf config-manager --enable crb --assumeyes && \
     dnf module enable swig --assumeyes && \
-    dnf install --assumeyes rpm-build autoconf-archive automake gcc-c++ pcre2-devel m4 swig python python-devel git libcap-devel zlib-devel && \
+    dnf install --assumeyes rpm-build autoconf-archive automake gcc-c++ pcre2-devel m4 swig python python-devel git libcap-devel zlib-devel wget && \
     cd /root && \
     groupadd mock && adduser mockbuild && \
     curl -LO https://raw.githubusercontent.com/baruch/fakeprovide/master/fakeprovide && chmod u+x fakeprovide && \
@@ -20,10 +20,10 @@ RUN --mount=type=cache,target=/sources \
     curl -LO https://ftp5.gwdg.de/pub/opensuse/repositories/home:/mdecker/openSUSE_Tumbleweed/src/cronolog-1.7.2-105.89.src.rpm && \
     rpm -iv *src.rpm && rpm -iv bison*.rpm
 RUN sed -i 's|amzn|rocky|g' ~/rpmbuild/SPECS/manatee-open.spec && rpmbuild -ba ~/rpmbuild/SPECS/manatee-open.spec
-COPY bonito-open.patch /root
+COPY bonito-open.patch crystal-open.patch /root
 RUN patch -p0 < /root/bonito-open.patch && rpmbuild -ba ~/rpmbuild/SPECS/bonito-open.spec
-RUN rpmbuild -ba ~/rpmbuild/SPECS/gdex.spec
-RUN rpmbuild -ba ~/rpmbuild/SPECS/crystal-open.spec
+RUN sed -i 's|amzn|rocky|g' ~/rpmbuild/SPECS/gdex.spec && rpmbuild -ba ~/rpmbuild/SPECS/gdex.spec
+RUN (if [ $(uname -m) == aarch64 ]; then patch -p0 < /root/crystal-open.patch; fi) && rpmbuild -ba ~/rpmbuild/SPECS/crystal-open.spec
 RUN rpmbuild -ba ~/rpmbuild/SPECS/cronolog.spec
 RUN cd /root && git clone --depth 1 https://github.com/seveas/python-prctl.git && \
     cd python-prctl/ && sed -i 's|name = "python-prctl"|name = "python3-prctl"|' setup.py && ./setup.py bdist_rpm && \
@@ -46,7 +46,7 @@ COPY --from=builder /root/rpmbuild/RPMS /root/rpmbuild/SRPMS /root
 COPY openapi /var/www/openapi
 RUN rpm -i ~/noarch/epel-release-latest-9.noarch.rpm ~/noarch/fakeprovide-system-logos-*.el9.noarch.rpm \
            ~/noarch/fakeprovide-httpd-*.el9.noarch.rpm && \
-    microdnf install -y lighttpd lighttpd-fastcgi m4 parallel python python3-pyyaml python3-lxml patch which less vim nano && \
+    microdnf install -y glibc-all-langpacks lighttpd lighttpd-fastcgi m4 parallel python python3-pyyaml python3-lxml patch which less vim nano && \
     microdnf clean all && \
     usermod -l www-data lighttpd && groupmod -n www-data lighttpd && \
     rpm -i ~/noarch/python3-openpyxl-*.noarch.rpm ~/$(uname -m)/python3-prctl-*.$(uname -m).rpm \

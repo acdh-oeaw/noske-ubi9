@@ -1,0 +1,12 @@
+--- /root/rpmbuild/SPECS/crystal-open.spec.old	2024-03-08 17:22:21.140011902 +0000
++++ /root/rpmbuild/SPECS/crystal-open.spec	2024-03-08 17:26:36.380012024 +0000
+@@ -22,6 +22,9 @@
+ %setup -q
+ 
+ %build
++sed -i 's|#wget|wget|g' Makefile
++sed -i 's|^[[:space:]]*tar.*$||g' Makefile
++sed -i 's|v16.16.0-linux-x64|v16.16.0-linux-arm64|g' Makefile
+ make
+ 
+ %install
