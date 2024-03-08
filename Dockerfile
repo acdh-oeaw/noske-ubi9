@@ -1,6 +1,9 @@
-FROM registry.access.redhat.com/ubi9 as builder
+FROM rockylinux/rockylinux:9.3-ubi as builder
+# registry.access.redhat.com/ubi9: CodeReady Builder does not provide swig on aarch64 !?!
 
 RUN --mount=type=cache,target=/sources \
+    dnf install 'dnf-command(config-manager)' --assumeyes && \
+    dnf config-manager --enable crb --assumeyes && \
     dnf module enable swig --assumeyes && \
     dnf install --assumeyes rpm-build autoconf-archive automake gcc-c++ pcre2-devel m4 swig python python-devel git libcap-devel zlib-devel && \
     cd /root && \
@@ -11,12 +14,12 @@ RUN --mount=type=cache,target=/sources \
     curl -LO https://corpora.fi.muni.cz/noske/current/centos7/bonito-open/bonito-open-5.71.9-1.el7.src.rpm && \
     curl -LO https://corpora.fi.muni.cz/noske/current/centos7/gdex/gdex-4.13.2-1.el7.src.rpm && \
     curl -LO https://corpora.fi.muni.cz/noske/current/centos7/crystal-open/crystal-open-2.165.2-1.el7.src.rpm && \
-    curl -LO https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/bison-3.7.4-5.el9.x86_64.rpm && \
-    curl -LO https://mirror.stream.centos.org/9-stream/AppStream/x86_64/os/Packages/bison-runtime-3.7.4-5.el9.x86_64.rpm && \
+    curl -LO https://mirror.stream.centos.org/9-stream/AppStream/$(uname -m)/os/Packages/bison-3.7.4-5.el9.$(uname -m).rpm && \
+    curl -LO https://mirror.stream.centos.org/9-stream/AppStream/$(uname -m)/os/Packages/bison-runtime-3.7.4-5.el9.$(uname -m).rpm && \
     curl -LO https://foss.heptapod.net/openpyxl/openpyxl/-/archive/branch/3.1/openpyxl-branch-3.1.tar.gz && \
-    curl -LO https://ftp5.gwdg.de/pub/opensuse/repositories/home:/mdecker/openSUSE_Tumbleweed/src/cronolog-1.7.2-105.88.src.rpm && \
+    curl -LO https://ftp5.gwdg.de/pub/opensuse/repositories/home:/mdecker/openSUSE_Tumbleweed/src/cronolog-1.7.2-105.89.src.rpm && \
     rpm -iv *src.rpm && rpm -iv bison*.rpm
-RUN rpmbuild -ba ~/rpmbuild/SPECS/manatee-open.spec
+RUN sed -i 's|amzn|rocky|g' ~/rpmbuild/SPECS/manatee-open.spec && rpmbuild -ba ~/rpmbuild/SPECS/manatee-open.spec
 COPY bonito-open.patch /root
 RUN patch -p0 < /root/bonito-open.patch && rpmbuild -ba ~/rpmbuild/SPECS/bonito-open.spec
 RUN rpmbuild -ba ~/rpmbuild/SPECS/gdex.spec
@@ -25,7 +28,7 @@ RUN rpmbuild -ba ~/rpmbuild/SPECS/cronolog.spec
 RUN cd /root && git clone --depth 1 https://github.com/seveas/python-prctl.git && \
     cd python-prctl/ && sed -i 's|name = "python-prctl"|name = "python3-prctl"|' setup.py && ./setup.py bdist_rpm && \
     mv dist/*.src.rpm ~/rpmbuild/SRPMS && \
-    mv dist/*.x86_64.rpm ~/rpmbuild/RPMS/x86_64
+    mv dist/*.$(uname -m).rpm ~/rpmbuild/RPMS/$(uname -m)
 RUN cd /root && tar -xf openpyxl-branch-3.1.tar.gz && cd openpyxl-branch-3.1 && sed -i "s|name='openpyxl'|name='python3-openpyxl'|" setup.py && \
     sed -i "1c#\!/usr/bin/python3" setup.py && ./setup.py bdist_rpm && \
     mv dist/*.src.rpm ~/rpmbuild/SRPMS && \
@@ -46,10 +49,10 @@ RUN rpm -i ~/noarch/epel-release-latest-9.noarch.rpm ~/noarch/fakeprovide-system
     microdnf install -y lighttpd lighttpd-fastcgi m4 parallel python python3-pyyaml python3-lxml patch which less vim nano && \
     microdnf clean all && \
     usermod -l www-data lighttpd && groupmod -n www-data lighttpd && \
-    rpm -i ~/noarch/python3-openpyxl-*.noarch.rpm ~/x86_64/python3-prctl-*.x86_64.rpm \
-           ~/x86_64/manatee-open-*.x86_64.rpm ~/x86_64/manatee-open-python3-*.x86_64.rpm \
+    rpm -i ~/noarch/python3-openpyxl-*.noarch.rpm ~/$(uname -m)/python3-prctl-*.$(uname -m).rpm \
+           ~/$(uname -m)/manatee-open-*.$(uname -m).rpm ~/$(uname -m)/manatee-open-python3-*.$(uname -m).rpm \
            ~/noarch/gdex-*.noarch.rpm ~/noarch/bonito-open-*.noarch.rpm \
-           ~/noarch/crystal-open-*.noarch.rpm ~/x86_64/cronolog-*.x86_64.rpm && \
+           ~/noarch/crystal-open-*.noarch.rpm ~/$(uname -m)/cronolog-*.$(uname -m).rpm && \
     mv -v /root/other_files/run_lighttpd.sh /root/other_files/import_logs.py / && \
     mv -v /root/other_files/lighttpd.conf /root/other_files/add_auth.sh /etc/lighttpd/ && \
     mv -v /root/other_files/run.cgi /var/www/bonito/ && \
