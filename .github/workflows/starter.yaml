@@ -102,7 +102,7 @@ jobs:
         - name: Get RPMS
           run: |
             docker run --detach --rm --name noske $DOCKER_METADATA_OUTPUT_TAGS
-            docker exec -it -u 0:0 noske /bin/bash -c 'cp /root/*.rpm /home/user; cp /root/noarch/*.rpm /home/user; cp /root/x86_64/*.rpm /home/user; chown -R www-data:www-data /home/user'
+            docker exec -u 0:0 noske /bin/bash -c 'cp /root/*.rpm /home/user; cp /root/noarch/*.rpm /home/user; cp /root/x86_64/*.rpm /home/user; chown -R www-data:www-data /home/user'
             docker cp noske:/home/user .
             docker stop noske 
         
