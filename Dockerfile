@@ -46,7 +46,7 @@ COPY --from=builder /root/rpmbuild/RPMS /root/rpmbuild/SRPMS /root
 COPY openapi /var/www/openapi
 RUN rpm -i ~/noarch/epel-release-latest-9.noarch.rpm ~/noarch/fakeprovide-system-logos-*.el9.noarch.rpm \
            ~/noarch/fakeprovide-httpd-*.el9.noarch.rpm && \
-    microdnf install -y glibc-all-langpacks lighttpd lighttpd-fastcgi m4 parallel python python3-pyyaml python3-lxml patch which less vim nano && \
+    microdnf install -y glibc-all-langpacks lighttpd lighttpd-fastcgi m4 parallel python python3-pyyaml python3-lxml patch which findutils less vim nano && \
     microdnf clean all && \
     usermod -l www-data lighttpd && groupmod -n www-data lighttpd && \
     rpm -i ~/noarch/python3-openpyxl-*.noarch.rpm ~/$(uname -m)/python3-prctl-*.$(uname -m).rpm \
