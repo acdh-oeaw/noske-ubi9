@@ -1,4 +1,4 @@
-FROM rockylinux/rockylinux:9.3-ubi as builder
+FROM rockylinux/rockylinux:9-ubi as builder
 # registry.access.redhat.com/ubi9: CodeReady Builder does not provide swig on aarch64 !?!
 
 RUN --mount=type=cache,target=/sources \
@@ -20,7 +20,7 @@ RUN --mount=type=cache,target=/sources \
     curl -LO https://ftp5.gwdg.de/pub/opensuse/repositories/home:/mdecker/openSUSE_Tumbleweed/src/cronolog-1.7.2-105.92.src.rpm && \
     rpm -iv *src.rpm && rpm -iv bison*.rpm
 RUN sed -i 's|amzn|rocky|g' ~/rpmbuild/SPECS/manatee-open.spec && rpmbuild -ba ~/rpmbuild/SPECS/manatee-open.spec
-COPY bonito-open.patch crystal-open.patch /root
+COPY bonito-open.patch crystal-open.patch /root/
 RUN patch -p0 < /root/bonito-open.patch && rpmbuild -ba ~/rpmbuild/SPECS/bonito-open.spec
 RUN sed -i 's|amzn|rocky|g' ~/rpmbuild/SPECS/gdex.spec && rpmbuild -ba ~/rpmbuild/SPECS/gdex.spec
 RUN (if [ $(uname -m) == aarch64 ]; then patch -p0 < /root/crystal-open.patch; fi) && rpmbuild -ba ~/rpmbuild/SPECS/crystal-open.spec
@@ -42,7 +42,7 @@ COPY run_lighttpd.sh import_logs.py \
      lighttpd.conf add_auth.sh \
      run.cgi test-run.cgi exportlib-py-pyxl-3-1.patch \
      /root/other_files/
-COPY --from=builder /root/rpmbuild/RPMS /root/rpmbuild/SRPMS /root
+COPY --from=builder /root/rpmbuild/RPMS /root/rpmbuild/SRPMS /root/
 COPY openapi /var/www/openapi
 RUN rpm -i ~/noarch/epel-release-latest-9.noarch.rpm ~/noarch/fakeprovide-system-logos-*.el9.noarch.rpm \
            ~/noarch/fakeprovide-httpd-*.el9.noarch.rpm && \
