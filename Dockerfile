@@ -17,7 +17,7 @@ RUN --mount=type=cache,target=/sources \
     curl -LO https://mirror.stream.centos.org/9-stream/AppStream/$(uname -m)/os/Packages/bison-3.7.4-5.el9.$(uname -m).rpm && \
     curl -LO https://mirror.stream.centos.org/9-stream/AppStream/$(uname -m)/os/Packages/bison-runtime-3.7.4-5.el9.$(uname -m).rpm && \
     curl -LO https://foss.heptapod.net/openpyxl/openpyxl/-/archive/branch/3.1/openpyxl-branch-3.1.tar.gz && \
-    curl -LO https://ftp5.gwdg.de/pub/opensuse/repositories/home:/mdecker/openSUSE_Tumbleweed/src/cronolog-1.7.2-105.92.src.rpm && \
+    curl -LO https://ftp5.gwdg.de/pub/opensuse/repositories/home:/mdecker/openSUSE_Tumbleweed/src/cronolog-1.7.2-105.93.src.rpm && \
     rpm -iv *src.rpm && rpm -iv bison*.rpm
 RUN sed -i 's|amzn|rocky|g' ~/rpmbuild/SPECS/manatee-open.spec && rpmbuild -ba ~/rpmbuild/SPECS/manatee-open.spec
 COPY bonito-open.patch crystal-open.patch /root/
