@@ -18,11 +18,11 @@ The list of the corpora that should be compiled on startup is supplied using `CO
 You usually mount them into the container like
 
 ```powershell
-docker run --rm -it -v Q:\path\to\your\verticals:/var/lib/manatee/data/verticals -v Q:\path\to\your\configuration-files:/var/lib/manatee/registry -p 8080:8080 -e CORPLIST=my_corpus  acdhch/noske:5.66.3-2.223.6-open
+docker run --rm -it -v Q:\path\to\your\verticals:/var/lib/manatee/data/verticals -v Q:\path\to\your\configuration-files:/var/lib/manatee/registry -p 8080:8080 -e CORPLIST=my_corpus ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-open
 ```
 or on Linux/MacOS
 ```bash
-docker run --rm -it -v $(pwd)/verticals:/var/lib/manatee/data/verticals -v $(pwd)/configuration-files:/var/lib/manatee/registry -p 8080:8080 -e CORPLIST=my_corpus acdhch/noske:5.66.3-2.223.6-open
+docker run --rm -it -v $(pwd)/verticals:/var/lib/manatee/data/verticals -v $(pwd)/configuration-files:/var/lib/manatee/registry -p 8080:8080 -e CORPLIST=my_corpus ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-open
 ```
 
 On Kubernetes you can use a Persistent Volume Claim for the verticals and a config map for the configuration/registry for example.
@@ -73,7 +73,7 @@ docker run --rm -it -v Q:\path\to\your\verticals:/var/lib/manatee/data/verticals
                                  -v Q:\path\to\your\users-options:/var/lib/bonito/options `                                
                                  -p 8080:8080 -e CORPLIST=my_corpus `
                                  -e HTPASSWD_FILE=/var/lib/bonito/htpasswd -e PASSWD_REALM=my_noske `
-                                 acdhch/noske:5.66.3-2.223.6-open
+                                 ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-open
 ```
 or on Linux/MacOS
 ```bash
@@ -84,7 +84,7 @@ docker run --rm -it -v $(pwd)/verticals:/var/lib/manatee/data/verticals \
                                  -v $(pwd)/users-options:/var/lib/bonito/options \
                                  -p 8080:8080 -e CORPLIST=my_corpus \
                                  -e HTPASSWD_FILE=/var/lib/bonito/htpasswd -e PASSWD_REALM=my_noske \
-                                  acdhch/noske:5.66.3-2.223.6-open
+                                 ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-open
 ```
 
 CORS
@@ -109,8 +109,6 @@ We would like to thank everyone that made these remarkable piece of software pos
 Sources
 -----------
 
-The sources used to build this container are available in the https://github.com/acdh-oeaw/docker-tools-environments repository.
-* for the current 5.x  version with the crystal user interface see the [noske-crystal](https://github.com/acdh-oeaw/docker-tools-environments/tree/master/noske_crystal) subdirectory
-* for the older 3.x versions with the classic bonito web interface see the [noske](https://github.com/acdh-oeaw/docker-tools-environments/tree/master/noske) subdirectory
+The sources used to build this container are available in the https://github.com/acdh-oeaw/noske-ubi9 repository.
 
-The Dockerfile just automates installing dependencies and downloading of the official Centos 7 or Ubuntu based packages.
+The Dockerfile just automates installing dependencies, downloading of the official SRC rpms and rebuilding it in a EL 9 environment (Rocky 9 and UBI9).
