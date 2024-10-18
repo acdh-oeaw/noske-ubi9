@@ -18,11 +18,11 @@ The list of the corpora that should be compiled on startup is supplied using `CO
 You usually mount them into the container like
 
 ```powershell
-docker run --rm -it -v Q:\path\to\your\verticals:/var/lib/manatee/data/verticals -v Q:\path\to\your\configuration-files:/var/lib/manatee/registry -p 8080:8080 -e CORPLIST=my_corpus ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-open
+docker run --rm -it -v Q:\path\to\your\verticals:/var/lib/manatee/data/verticals -v Q:\path\to\your\configuration-files:/var/lib/manatee/registry -p 8080:8080 -e CORPLIST=my_corpus ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-2-open
 ```
 or on Linux/MacOS
 ```bash
-docker run --rm -it -v $(pwd)/verticals:/var/lib/manatee/data/verticals -v $(pwd)/configuration-files:/var/lib/manatee/registry -p 8080:8080 -e CORPLIST=my_corpus ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-open
+docker run --rm -it -v $(pwd)/verticals:/var/lib/manatee/data/verticals -v $(pwd)/configuration-files:/var/lib/manatee/registry -p 8080:8080 -e CORPLIST=my_corpus ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-2-open
 ```
 
 On Kubernetes you can use a Persistent Volume Claim for the verticals and a config map for the configuration/registry for example.
@@ -73,7 +73,7 @@ docker run --rm -it -v Q:\path\to\your\verticals:/var/lib/manatee/data/verticals
                                  -v Q:\path\to\your\users-options:/var/lib/bonito/options `                                
                                  -p 8080:8080 -e CORPLIST=my_corpus `
                                  -e HTPASSWD_FILE=/var/lib/bonito/htpasswd -e PASSWD_REALM=my_noske `
-                                 ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-open
+                                 ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-2-open
 ```
 or on Linux/MacOS
 ```bash
@@ -84,7 +84,7 @@ docker run --rm -it -v $(pwd)/verticals:/var/lib/manatee/data/verticals \
                                  -v $(pwd)/users-options:/var/lib/bonito/options \
                                  -p 8080:8080 -e CORPLIST=my_corpus \
                                  -e HTPASSWD_FILE=/var/lib/bonito/htpasswd -e PASSWD_REALM=my_noske \
-                                 ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-open
+                                 ghcr.io/acdh-oeaw/noske-ubi9/noske:5.71.15-2.225.8-2-open
 ```
 
 CORS
