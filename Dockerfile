@@ -13,7 +13,7 @@ RUN --mount=type=cache,target=/sources \
     curl -LO https://corpora.fi.muni.cz/noske/current/centos7/manatee-open/manatee-open-2.225.8-1.el7.src.rpm && \
     curl -LO https://corpora.fi.muni.cz/noske/current/centos7/bonito-open/bonito-open-5.71.15-1.el7.src.rpm && \
     curl -LO https://corpora.fi.muni.cz/noske/current/centos7/gdex/gdex-4.13.2-1.el7.src.rpm && \
-    curl -LO https://corpora.fi.muni.cz/noske/current/centos7/crystal-open/crystal-open-2.166.4-1.el7.src.rpm && \
+    curl -LO https://corpora.fi.muni.cz/noske/current/centos7/crystal-open/crystal-open-2.178.2-1.el7.src.rpm && \
     curl -LO https://mirror.stream.centos.org/9-stream/AppStream/$(uname -m)/os/Packages/bison-3.7.4-5.el9.$(uname -m).rpm && \
     curl -LO https://mirror.stream.centos.org/9-stream/AppStream/$(uname -m)/os/Packages/bison-runtime-3.7.4-5.el9.$(uname -m).rpm && \
     curl -LO https://foss.heptapod.net/openpyxl/openpyxl/-/archive/branch/3.1/openpyxl-branch-3.1.tar.gz && \
